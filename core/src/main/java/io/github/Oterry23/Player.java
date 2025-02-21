@@ -17,7 +17,9 @@ public class Player extends Actor{
     Vector2 direction;
     float rotation;
     
+    private boolean isDashing = false;
     private final float speed = 100f;
+    private final float dashStrength = 10f;
 
 
     public Player(float x, float y){
@@ -58,22 +60,37 @@ public class Player extends Actor{
 
         velocity.set(0, 0);
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            isDashing = true;
+        }
+
+        float currentSpeed = speed;
+
+        if (isDashing) {
+            currentSpeed *= dashStrength;
+        }
+
+
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            direction.nor().scl(speed * delta);
+            direction.nor().scl(currentSpeed * delta);
             setPosition(getX() + direction.x, getY() + direction.y);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            direction.nor().scl(-speed * delta);
-            setPosition(getX() + direction.x, getY() + direction.y);
+            direction.nor().scl(currentSpeed * delta);
+            setPosition(getX() - direction.x, getY() - direction.y);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) { // Strafe right
-            Vector2 right = new Vector2(direction.y, -direction.x).nor().scl(speed * delta);
+            Vector2 right = new Vector2(direction.y, -direction.x).nor().scl(currentSpeed * delta);
             setPosition(getX() + right.x, getY() + right.y);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) { // Strafe left
-            Vector2 left = new Vector2(-direction.y, direction.x).nor().scl(speed * delta);
+            Vector2 left = new Vector2(-direction.y, direction.x).nor().scl(currentSpeed * delta);
             setPosition(getX() + left.x, getY() + left.y);
+        }
+
+        if (isDashing) {
+           isDashing = false;
         }
     }
 }
