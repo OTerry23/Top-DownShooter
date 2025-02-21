@@ -2,6 +2,7 @@ package io.github.Oterry23;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -41,12 +42,17 @@ public class Player extends Actor{
     @Override
     public void act(float delta){
         move(delta);
+        shoot();
         super.act(delta);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha){
         sprite.draw(batch);
+    }
+
+    public Vector2 getDirection(){
+        return direction;
     }
 
     public void rotate(Vector2 direction){
@@ -91,6 +97,19 @@ public class Player extends Actor{
 
         if (isDashing) {
            isDashing = false;
+        }
+    }
+
+    Projectiles projectiles;
+    Projectile proj;
+    public void shoot(){
+        if(projectiles == null){
+            projectiles = new Projectiles();
+        }
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            System.out.print(getStage());
+            proj = new Projectile(getX(), getY(), direction);
+            getStage().addActor(proj);
         }
     }
 }
