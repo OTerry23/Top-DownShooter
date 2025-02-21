@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Projectile extends Actor {
     Vector2 direction;
-    public float projSpeed = 100f;
+    public float projSpeed = 200f;
 
     Sprite sprite;
     Texture texture;
