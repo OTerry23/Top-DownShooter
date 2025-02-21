@@ -8,7 +8,7 @@ public class Level extends Stage{
     public Player player;
 
     public Level(FitViewport viewport){
-        player = new Player(viewport.getWorldWidth()/2, 0);
+        player = new Player(0, 0);
         addActor(player);
     }
 }

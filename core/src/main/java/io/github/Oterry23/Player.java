@@ -14,7 +14,9 @@ public class Player extends Actor{
 
     Vector2 position;
     Vector2 velocity;
-
+    Vector2 direction;
+    float rotation;
+    
     private final float speed = 100f;
 
 
@@ -25,21 +27,19 @@ public class Player extends Actor{
         position = new Vector2(x, y);
         velocity = new Vector2(0, 0);
 
-        sprite.setPosition(position.x, position.y);
-        setPosition(sprite.getX(),sprite.getY());
+        setPosition(position.x, position.y);
+    }
+
+    @Override
+    public void setPosition(float x, float y){
+        sprite.setPosition(x, y);
+        super.setPosition(x, y);
     }
 
     @Override
     public void act(float delta){
-
         move(delta);
         super.act(delta);
-    }
-
-    @Override
-    public void positionChanged(){
-        sprite.setPosition(getX(), getY());
-        super.positionChanged();
     }
 
     @Override
@@ -47,22 +47,33 @@ public class Player extends Actor{
         sprite.draw(batch);
     }
 
+    public void rotate(Vector2 direction){
+        rotation = direction.angleDeg();
+        sprite.setRotation(rotation);
+    }
+
     public void move(float delta){
+        direction = new Vector2(Gdx.input.getX() - getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - getY());
+        rotate(direction);
+
         velocity.set(0, 0);
 
-        if(Gdx.input.isKeyPressed(Input.Keys.W) && getX() < Gdx.graphics.getHeight()-sprite.getHeight()){
-            velocity.y = speed;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            direction.nor().scl(speed * delta);
+            setPosition(getX() + direction.x, getY() + direction.y);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S) && getX() >= 0){
-            velocity.y = -speed;
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            direction.nor().scl(-speed * delta);
+            setPosition(getX() + direction.x, getY() + direction.y);
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.D) && getX() < Gdx.graphics.getWidth()-sprite.getWidth()){
-            velocity.x = speed;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) { // Strafe right
+            Vector2 right = new Vector2(direction.y, -direction.x).nor().scl(speed * delta);
+            setPosition(getX() + right.x, getY() + right.y);
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.A) && getX() >= 0){
-            velocity.x = -speed;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) { // Strafe left
+            Vector2 left = new Vector2(-direction.y, direction.x).nor().scl(speed * delta);
+            setPosition(getX() + left.x, getY() + left.y);
         }
-        position.add(velocity.x * delta, velocity.y * delta);
-        setPosition(position.x, position.y);
     }
 }
